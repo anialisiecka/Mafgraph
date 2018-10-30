@@ -108,7 +108,7 @@ def set_out_edges(d, blocks):
                     
 def sort_mafblocks(maf_file):   
     blocks, seq = read_maf(maf_file) # blocks - list of Block instances
-    d = weight(seq)  # d - dictionary of edges
+    d = weight(seq)
     edges = sorted(d.keys(), key = lambda x: d[x][1]) # list of edges sorted by the weight
     G = nx.Graph()
     for e in edges:
