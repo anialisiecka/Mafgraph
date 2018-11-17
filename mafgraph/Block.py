@@ -60,5 +60,13 @@ class Block:
         selfroot.toroot = otheroot
         del selfroot.flanks
         
+    def orient_block(self):
+        # Modify alignment according to block orientation
+        if self.orientation() == -1:
+            for u in self.alignment:
+                u.seq = u.seq.reverse_complement()
+                u.annotations["strand"] *= -1
+                u.annotations["start"] = u.annotations["srcSize"] - u.annotations["size"] - u.annotations["start"]
+        
     def add_out_edges(self, to, edgeType, list_of_seq):
         self.out_edges.append(Arc(to, edgeType, list_of_seq))
