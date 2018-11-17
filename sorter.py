@@ -65,14 +65,6 @@ def _add_edge_between_components(e, blocks):
         flank = -1
     blocks[e.right].unionto(blocks[e.left], reverse, flank)
 
-def orient_block(block):
-    # Modify alignment according to block orientation
-    if block.orientation() == -1:
-        for u in block.alignment:
-            u.seq = u.seq.reverse_complement()
-            u.annotations["strand"] *= -1
-            u.annotations["start"] = u.annotations["srcSize"] - u.annotations["size"] - u.annotations["start"]
-
 def connect_components(blocks):
     if len(blocks) != blocks[0].size(): 
         d = {blocks[0].find(): 0}
@@ -85,26 +77,25 @@ def connect_components(blocks):
                 n += block.size()
             else:
                 block.reorder(d[block.find()] + block.order())
-            orient_block(block)
+            block.orient_block()
     else:
         for block in blocks:
-            orient_block(block)
+            block.orient_block()
             
 def set_out_edges(d, blocks):
     for edge in d:
+        edge_type = (blocks[edge.left].orientation()*edge.type[0], blocks[edge.right].orientation()*edge.type[1])
         for tup in d[edge][0]:
             tup[0].set_start_position(blocks[edge.left].alignment, blocks[edge.left].orientation())
-            tup[1].set_start_position(blocks[edge.right].alignment, blocks[edge.right].orientation())
-        if (blocks[edge.left].order() < blocks[edge.right].order() 
-         and (blocks[edge.left].orientation()*edge.type[0], blocks[edge.right].orientation()*edge.type[1]) == (1,-1)):
-            blocks[edge.left].add_out_edges(edge.right, (1,-1), d[edge][0])
-        elif (blocks[edge.left].order() > blocks[edge.right].order() 
-         and (blocks[edge.right].orientation()*edge.type[1], blocks[edge.left].orientation()*edge.type[0]) == (1,-1)):
-            sequences = [x[::-1] for x in d[edge][0]]
-            blocks[edge.right].add_out_edges(edge.left, (1,-1), sequences)
-        else:
-            edge_type = (blocks[edge.left].orientation()*edge.type[0], blocks[edge.right].orientation()*edge.type[1])
+            tup[1].set_start_position(blocks[edge.right].alignment, blocks[edge.right].orientation())   
+        if blocks[edge.left].order() < blocks[edge.right].order():
             blocks[edge.left].add_out_edges(edge.right, edge_type, d[edge][0])
+        elif blocks[edge.left].order() > blocks[edge.right].order():
+            sequences = [x[::-1] for x in d[edge][0]]
+            edge_type = edge_type[::-1]
+            blocks[edge.right].add_out_edges(edge.left, edge_type, sequences)
+        else:
+            blocks[edge.left].add_out_edges(edge.right, edge.type, d[edge][0])
                     
 def sort_mafblocks(maf_file):   
     blocks, seq = read_maf(maf_file) # blocks - list of Block instances
