@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import networkx as nx
-from mafreader import read_maf
-from weighted_edges import weight, Edge
+from .mafreader import read_maf
+from .weighted_edges import weight, Edge
 
 def _out_edges(v, blocks, ub, G):
     # Return a list of nodes connected to node v by edge leaving the vertex v   
@@ -100,7 +100,7 @@ def set_out_edges(d, blocks):
 def sort_mafblocks(maf_file):   
     blocks, seq = read_maf(maf_file) # blocks - list of Block instances
     d = weight(seq)
-    edges = sorted(d.keys(), key = lambda x: d[x][1]) # list of edges sorted by the weight
+    edges = sorted(d.keys(), key=lambda x: (d[x][1], x.type, x.left, x.right)) # list of edges sorted by the weight
     G = nx.Graph()
     for e in edges:
         if blocks[e.left].find() is blocks[e.right].find():

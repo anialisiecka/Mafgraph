@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from mafgraph.EdgeInfo import EdgeInfo
+from .graph.EdgeInfo import EdgeInfo
 from collections import defaultdict, namedtuple
 
 Edge = namedtuple('Edge', ['left', 'right', 'type'])
@@ -19,8 +19,8 @@ def connect_blocks(seq1, seq2, d):
     d[e][1] += 1   
     
 def weight(seq):
-    d = defaultdict(lambda: [[],0])
-    for i in xrange(len(seq)-1):
+    d = defaultdict(lambda: [[], 0])
+    for i in xrange(len(seq) - 1):
         if seq[i].id == seq[i+1].id:
             connect_blocks(seq[i], seq[i+1], d)
     return d

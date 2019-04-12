@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from Arc import Arc
+from .Arc import Arc
 
 class Block:
     def __init__(self, block_id, alignment):
@@ -42,14 +42,14 @@ class Block:
         rootflanks = self.find().flanks
         return rootflanks[1]+rootflanks[-1]+1
     
-	def minimum(self):
-		root = self.find()
-		return -root.flanks[-1]
-	
-	def maximum(self):
-		root = self.find()
-		return root.flanks[1]		
-	
+    def minimum(self):
+        root = self.find()
+        return -root.flanks[-1]
+
+    def maximum(self):
+        root = self.find()
+        return root.flanks[1]
+
     def unionto(self, other, reverse, flank): # join self to other
         selfroot = self.find()
         otheroot = other.find()

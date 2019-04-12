@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from Bio import AlignIO
-from mafgraph.Block import Block
-from mafgraph.SequenceInfo import SequenceInfo
+from .graph.Block import Block
+from .graph.SequenceInfo import SequenceInfo
 
 def start_position(sequence):
     # Return start position relative to the plus strand

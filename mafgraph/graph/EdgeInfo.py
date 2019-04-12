@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import sys
 sys.path.append('..')
-from mafreader import start_position
+from ..mafreader import start_position
 
 class EdgeInfo:
     def __init__(self, seq_id, start_pos):
