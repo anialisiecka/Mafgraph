@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import networkx as nx
+import six
 from .mafreader import read_maf
 from .weighted_edges import weight, Edge
 
@@ -37,8 +38,12 @@ def _reorder(R_f, R_b, blocks):
     R_b.sort(key = lambda x: blocks[x].order())
     L = R_b + R_f
     O = sorted(blocks[x].order() for x in L)
-    for i in xrange(len(L)):
-        blocks[L[i]].reorder(O[i])
+    if six.PY2:
+        for i in xrange(len(L)):
+            blocks[L[i]].reorder(O[i])
+    else:
+        for i in range(len(L)):
+            blocks[L[i]].reorder(O[i])
 
 def _add_edge_within_component(x, y, G, blocks):
     # Add edge between blocks of the same component
@@ -96,7 +101,7 @@ def set_out_edges(d, blocks):
             blocks[edge.right].add_out_edges(edge.left, edge_type, sequences)
         else:
             blocks[edge.left].add_out_edges(edge.right, edge.type, d[edge][0])
-                    
+
 def sort_mafblocks(maf_file):   
     blocks, seq = read_maf(maf_file) # blocks - list of Block instances
     d = weight(seq)
