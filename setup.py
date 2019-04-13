@@ -5,6 +5,6 @@ setup(name='mafgraph',
       description='MAF sorter',
       author='Anna Lisiecka',
       url='https://github.com/anialisiecka/Mafgraph',
-      packages=['mafgraph'],
+      packages=['mafgraph', 'mafgraph.graph'],
       install_requires=['biopython', 'networkx']
      )
