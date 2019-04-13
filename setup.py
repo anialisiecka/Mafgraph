@@ -5,5 +5,5 @@ setup(name='mafgraph',
       description='MAF sorter',
       author='Anna Lisiecka',
       url='https://github.com/anialisiecka/Mafgraph',
-      py_modules=['mafgraph'],
+      packages=['mafgraph'],
      )
