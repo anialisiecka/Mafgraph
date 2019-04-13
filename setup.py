@@ -6,4 +6,5 @@ setup(name='mafgraph',
       author='Anna Lisiecka',
       url='https://github.com/anialisiecka/Mafgraph',
       packages=['mafgraph'],
+      install_requires=['biopython', 'networkx']
      )
