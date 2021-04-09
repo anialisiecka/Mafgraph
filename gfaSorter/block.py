@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
 class Block:
-    def __init__(self, block_id):
+    def __init__(self, block_id, seq):
         self.id = block_id
+        self.seq = seq
         self.toroot = self # parent in find-union tree
         self.shift = 0 # order relative to parent
         self.reorder_shift = 0 # modification caused by edges inserted within group
