@@ -4,6 +4,53 @@ import sys
 from gfaReader import read
 from graph import Graph
 
+def strand(x):
+    if x == '+': return 1
+    else: return -1
+
+def reverseComplement(seq):
+    d = {'A':'T', 'T':'A', 'C':'G', 'G':'C'}
+    rc=''
+    for i in range(len(seq)-1, -1, -1):
+        rc+=d[seq[i]]
+    return rc
+
+def write(infile, outfile, blocks):
+    links=[]
+    paths=[]
+    with open(infile) as f:
+            for line in f:
+                if line.strip().startswith('L'):
+                    links.append(line.split()[1:])
+                 elif line.strip().startswith('P'):
+                    paths.append(line.split()[1:])
+    sortedBlocks=sorted(blocks, key=lambda b: b.order()) # sorted list of nodes
+    with open(outfile, 'w') as f:
+        f.write('H'+'\t'+'VN:Z:1.0'+'\n')
+        for b in sortedBlocks:
+            if b.orientation() == -1: b.seq=reverseComplement(b.seq)
+            f.write('S'+'\t'+str(b.id+1)+'\t'+b.seq+'\n')
+        for p in paths:
+            f.write('P'+'\t'+p[0]+'\t')
+            x=p[1].split(',')
+            for i in range(len(x)):
+                if blocks[int(x[i][:-1])-1].orientation()==strand(x[i][-1]):
+                    x[i]=x[i][:-1]+'+'
+                else: x[i]=x[i][:-1]+'-'
+            f.write(','.join(x)+'\t'+p[2]+'\n')
+        for l in links:
+            if blocks[int(l[0])-1].orientation() == strand(l[1]):
+                 l[1]='+'
+            else:
+                 l[1]='-'
+            if blocks[int([2])-1].orientation() == strand(l[3]):
+                 l[3]='+'
+            else:
+                 l[3]='-'
+        links.sort(key=lambda x: (blocks[int(x[0])].order(), blocks[int(x[2])].order()))
+        for l in links:
+            f.write('L'+'\t'+'\t'.join(l)+'\n')
+            
 def reorder(R_f, R_b, blocks):
     R_f.sort(key = lambda x: blocks[x].order())
     R_b.sort(key = lambda x: blocks[x].order())
@@ -50,10 +97,10 @@ def connect_components(blocks):
             else:
                 block.reorder(d[block.find()] + block.order())
 
-def linSort(gfa_file): 
+def linSort(infile, outfile): 
     # blocks - list of Block instances
     # edges - list of edges sorted by the weight
-    blocks, edges = read(gfa_file)
+    blocks, edges = read(infile)
     G = Graph(len(blocks))
     for e, w in edges:
         if blocks[e[0]].find() is blocks[e[2]].find():
@@ -68,4 +115,4 @@ def linSort(gfa_file):
             addEdgeBetweenComponents(e, blocks)
             G.addEdge(e[0], e[2])
     connect_components(blocks)
-    return blocks, G
+    write(infile, outfile, blocks)
