@@ -27,7 +27,7 @@ def read(gfa_file):
         i = 0
         for line in f:
             if line.strip().startswith('S'):
-                blocks.append(Block(i))
+                blocks.append(Block(i,line.split()[2]))
                 i += 1
             elif line.strip().startswith('P'):
                 line = line.split()[2].split(',')
