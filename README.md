@@ -2,4 +2,6 @@
 
 This package performs sorting aligned sequences blocks. 
 
-Input: maf (Multiple Alignment File)
+mafgraph input: maf (Multiple Alignment File)
+
+gfaSorter input: gfa (Graphical Fragment Assembly)
